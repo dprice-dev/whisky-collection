@@ -1,6 +1,17 @@
 {
   "collection": [
     {
+      "id": 3,
+      "name": "Lagavullin",
+      "distillery": "",
+      "type": "Single malt Scotch",
+      "status": "shelf",
+      "ppm": "",
+      "notes": "",
+      "rating": 0,
+      "added": "2026-05-04"
+    },
+    {
       "id": 1,
       "name": "Lagavulin 11yr Offerman Caribbean Rum Cask",
       "distillery": "Lagavulin",
@@ -9,7 +20,7 @@
       "ppm": "35",
       "rating": 0,
       "added": "2026-05-04",
-      "notes": "Limited edition Nick Offerman collab. Rum cask finish softens the peat. Keep sealed — collectible."
+      "notes": "Limited edition Nick Offerman collab. Rum cask finish softens the peat. Keep sealed â collectible."
     },
     {
       "id": 2,
@@ -20,8 +31,8 @@
       "ppm": "",
       "rating": 0,
       "added": "2026-05-04",
-      "notes": "Annual Derby edition bottle. Sentimental — gift from daughter. Keep sealed."
+      "notes": "Annual Derby edition bottle. Sentimental â gift from daughter. Keep sealed."
     }
   ],
-  "nextId": 3
+  "nextId": 4
 }
