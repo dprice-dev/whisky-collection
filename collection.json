@@ -7,7 +7,7 @@
       "type": "Single malt Scotch",
       "status": "shelf",
       "ppm": "",
-      "notes": "",
+      "notes": "Hello",
       "rating": 0,
       "added": "2026-05-04"
     },
@@ -20,7 +20,7 @@
       "ppm": "35",
       "rating": 0,
       "added": "2026-05-04",
-      "notes": "Limited edition Nick Offerman collab. Rum cask finish softens the peat. Keep sealed â collectible."
+      "notes": "Limited edition Nick Offerman collab. Rum cask finish softens the peat. Keep sealed Ã¢ÂÂ collectible."
     },
     {
       "id": 2,
@@ -31,7 +31,7 @@
       "ppm": "",
       "rating": 0,
       "added": "2026-05-04",
-      "notes": "Annual Derby edition bottle. Sentimental â gift from daughter. Keep sealed."
+      "notes": "Annual Derby edition bottle. Sentimental Ã¢ÂÂ gift from daughter. Keep sealed."
     }
   ],
   "nextId": 4
