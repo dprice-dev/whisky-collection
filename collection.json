@@ -1,0 +1,27 @@
+{
+  "collection": [
+    {
+      "id": 1,
+      "name": "Lagavulin 11yr Offerman Caribbean Rum Cask",
+      "distillery": "Lagavulin",
+      "type": "Single malt Scotch",
+      "status": "shelf",
+      "ppm": "35",
+      "rating": 0,
+      "added": "2026-05-04",
+      "notes": "Limited edition Nick Offerman collab. Rum cask finish softens the peat. Keep sealed — collectible."
+    },
+    {
+      "id": 2,
+      "name": "Woodford Reserve Kentucky Derby",
+      "distillery": "Woodford Reserve",
+      "type": "Bourbon",
+      "status": "shelf",
+      "ppm": "",
+      "rating": 0,
+      "added": "2026-05-04",
+      "notes": "Annual Derby edition bottle. Sentimental — gift from daughter. Keep sealed."
+    }
+  ],
+  "nextId": 3
+}
