@@ -3,473 +3,2820 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Whisky Collection</title>
+  <title>The Cellar Register — Whisky Collection</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ==============================================================
+   The Cellar Register — editorial / archival design system
+   ============================================================== */
 
-    :root {
-      --bg: #ffffff; --bg2: #f6f5f0; --bg3: #eeecea;
-      --text: #1a1a18; --text2: #5a5a56; --text3: #9a9a94;
-      --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
-      --radius: 10px; --radius-sm: 6px;
-      --amber-bg:#faeeda; --amber-text:#633806;
-      --green-bg:#eaf3de; --green-text:#27500a;
-      --blue-bg:#e6f1fb;  --blue-text:#0c447c;
-      --gray-bg:#f1efe8;  --gray-text:#444441;
-      --red-text:#a32d2d;
-    }
+:root {
+  --bg: #f3ecdf;
+  --bg2: #ebe2cf;
+  --paper: #f8f3e6;
+  --surface: #fbf7ec;
+  --ink: #1f1a14;
+  --ink2: #5a4f3f;
+  --ink3: #8a7d6a;
+  --rule: #1f1a1422;
+  --rule-strong: #1f1a1455;
+  --accent: #8a4a1f;
+  --accent2: #b8763c;
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:#1c1c1a; --bg2:#252523; --bg3:#2e2e2b;
-        --text:#f0ede6; --text2:#a8a8a0; --text3:#686860;
-        --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2);
-        --amber-bg:#412402; --amber-text:#FAC775;
-        --green-bg:#173404; --green-text:#C0DD97;
-        --blue-bg:#042C53;  --blue-text:#B5D4F4;
-        --gray-bg:#2C2C2A;  --gray-text:#D3D1C7;
-        --red-text:#F09595;
-      }
-    }
+  --display-font: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --serif-font: "Newsreader", "Source Serif Pro", Georgia, serif;
+  --mono-font: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  --sans-font: "Inter Tight", -apple-system, sans-serif;
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg3); color: var(--text);
-      min-height: 100vh; font-size: 15px; line-height: 1.5;
-    }
+  --row-pad: 16px 0;
+}
 
-    header {
-      background: var(--bg); border-bottom: 0.5px solid var(--border);
-      padding: 0 1.25rem; height: 52px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 10;
-    }
-    header h1 { font-size: 16px; font-weight: 500; }
-    .sync-row { display: flex; align-items: center; gap: 8px; }
-    #sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #888; flex-shrink: 0; transition: background 0.3s; }
-    #sync-label { font-size: 12px; color: var(--text3); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    main { max-width: 680px; margin: 0 auto; padding: 1.25rem; }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif-font);
+  font-size: 16px;
+  line-height: 1.55;
+  font-feature-settings: "onum" 1, "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 1.25rem; }
-    .stat { background: var(--bg); border-radius: var(--radius-sm); padding: 0.75rem 1rem; }
-    .stat-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
-    .stat-val { font-size: 22px; font-weight: 500; }
+#root {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 56px 48px 96px;
+}
 
-    .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; }
-    .card-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+@media (max-width: 720px) {
+  #root { padding: 32px 20px 80px; }
+}
 
-    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+/* ==============================================================
+   MASTHEAD
+   ============================================================== */
 
-    @media (max-width: 520px) {
-      .g2, .g3 { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(2,1fr); }
-    }
+.masthead {
+  position: relative;
+  margin-bottom: 36px;
+}
 
-    input[type=text], input[type=password], select, textarea {
-      width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm);
-      padding: 8px 10px; font-size: 13px; color: var(--text); background: var(--bg);
-      font-family: inherit; appearance: none;
-    }
-    select { height: 36px; }
-    textarea { resize: vertical; min-height: 64px; }
-    input:focus, select:focus, textarea:focus {
-      outline: none; border-color: #378ADD; box-shadow: 0 0 0 2px rgba(55,138,221,0.15);
-    }
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  padding-bottom: 18px;
+  border-bottom: 0.5px solid var(--rule-strong);
+}
 
-    .form-footer { display: flex; justify-content: flex-end; margin-top: 10px; gap: 8px; }
+.meta-line { display: flex; gap: 8px; align-items: baseline; }
+.meta-line .dot { color: var(--ink3); }
 
-    button {
-      font-family: inherit; cursor: pointer; background: transparent;
-      border: 0.5px solid var(--border2); border-radius: var(--radius-sm);
-      padding: 7px 16px; font-size: 13px; color: var(--text); transition: background 0.15s;
-    }
-    button:hover { background: var(--bg2); }
-    button:active { transform: scale(0.98); }
-    button:disabled { opacity: 0.4; cursor: default; transform: none; }
-    button.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-    button.primary:hover { opacity: 0.85; }
-    button.danger { color: var(--red-text); }
-    button.sm { padding: 4px 10px; font-size: 12px; }
+.sync {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink2);
+}
+.sync-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+.sync.ok .sync-dot { background: #3d8a4a; }
+.sync.dirty .sync-dot { background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+.sync.loading .sync-dot { background: #888; animation: pulse 1.6s ease-in-out infinite; }
+.sync.saving .sync-dot { background: var(--accent); animation: pulse 0.8s ease-in-out infinite; }
+.sync.error .sync-dot { background: #a32d2d; }
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
-    .filters { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-    .filters select { width: auto; min-width: 150px; }
-    .count { font-size: 12px; color: var(--text3); margin-left: auto; }
+.btn-link {
+  background: none;
+  border: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 4px 8px;
+  border: 0.5px solid transparent;
+  border-radius: 0;
+  transition: border-color 0.15s;
+}
+.btn-link:hover:not(:disabled) { border-color: var(--accent); }
+.btn-link:disabled { color: var(--ink3); cursor: default; }
 
-    .bottle { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; }
+.title {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 18px;
+  font-family: var(--display-font);
+  font-weight: 400;
+  text-align: center;
+  margin: 36px 0 22px;
+  font-style: italic;
+  line-height: 1;
+}
+.title-the {
+  font-size: 28px;
+  color: var(--ink2);
+  letter-spacing: 0.02em;
+}
+.title-main {
+  font-size: clamp(56px, 9vw, 96px);
+  letter-spacing: -0.015em;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1;
+}
 
-    .bottle-view { padding: 12px 14px; }
-    .bottle-top { display: flex; align-items: flex-start; gap: 10px; }
-    .bottle-info { flex: 1; min-width: 0; }
-    .bottle-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
-    .bottle-name { font-size: 14px; font-weight: 500; }
-    .bottle-meta { font-size: 12px; color: var(--text2); margin-bottom: 3px; }
-    .bottle-notes { font-size: 12px; color: var(--text2); font-style: italic; margin-top: 5px; }
-    .bottle-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.subtitle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink2);
+  margin-bottom: 28px;
+  line-height: 1.3;
+}
+.subtitle .kept { color: var(--accent); }
 
-    .bottle-edit {
-      display: none; padding: 12px 14px;
-      border-top: 0.5px solid var(--border); background: var(--bg2);
-    }
-    .bottle-edit.open { display: block; }
-    .bottle-edit .g2 { margin-bottom: 8px; }
-    .bottle-edit .g3 { margin-bottom: 8px; }
-    .bottle-edit textarea { margin-bottom: 8px; }
-    .edit-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.masthead-rule {
+  border-top: 2px solid var(--ink);
+  border-bottom: 0.5px solid var(--ink);
+  height: 6px;
+  margin: 18px 0 24px;
+}
 
-    .badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
-    .badge-shelf    { background: var(--blue-bg);  color: var(--blue-text);  }
-    .badge-drinking { background: var(--green-bg); color: var(--green-text); }
-    .badge-to-try   { background: var(--amber-bg); color: var(--amber-text); }
-    .badge-finished { background: var(--gray-bg);  color: var(--gray-text);  }
-    .ppm-tag { font-size: 10px; color: var(--text3); }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
 
-    .rating { display: flex; gap: 2px; margin-top: 4px; }
-    .star { font-size: 13px; cursor: pointer; color: var(--text3); user-select: none; }
-    .star.on { color: #BA7517; }
+.stat {
+  padding: 14px 18px;
+  border-right: 0.5px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat:last-child { border-right: none; }
+.stat:first-child { padding-left: 0; }
 
-    .setup-overlay {
-      position: fixed; inset: 0; background: var(--bg3);
-      display: flex; align-items: center; justify-content: center; padding: 1.25rem; z-index: 100;
-    }
-    .setup-box {
-      background: var(--bg); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; width: 100%; max-width: 480px;
-    }
-    .setup-box h2 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
-    .setup-box p { font-size: 13px; color: var(--text2); margin-bottom: 1rem; line-height: 1.6; }
-    .setup-box label { font-size: 12px; color: var(--text3); display: block; margin-bottom: 4px; margin-top: 12px; }
-    .setup-box a { color: #378ADD; }
-    .error-msg { font-size: 12px; color: var(--red-text); margin-top: 8px; min-height: 16px; }
-    .empty { font-size: 13px; color: var(--text3); text-align: center; padding: 2.5rem 0; }
+.stat-val {
+  font-family: var(--display-font);
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1;
+  font-feature-settings: "lnum" 1;
+}
+.stat-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.stat-accent .stat-val { color: var(--accent); }
+.stat-subtle .stat-val { color: var(--ink3); }
+
+/* ==============================================================
+   FACET STRIP — three columns: Origin / Region / Cask
+   ============================================================== */
+
+.loading {
+  text-align: center;
+  padding: 200px 0;
+}
+.loading-text {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink2);
+}
+
+.facet-strip {
+  margin: 28px 0 24px;
+  padding: 22px 24px;
+  background: var(--paper);
+  border-top: 0.5px solid var(--rule-strong);
+  border-bottom: 0.5px solid var(--rule-strong);
+}
+.facet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+@media (max-width: 720px) {
+  .facet-grid { grid-template-columns: 1fr; gap: 24px; }
+}
+
+.facet-col { display: flex; flex-direction: column; }
+.facet-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.facet-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink2);
+}
+.facet-sublabel {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink3);
+}
+.facet-rule {
+  flex: 1;
+  height: 0.5px;
+  background: var(--rule-strong);
+}
+.facet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.facet-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 36px 32px;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 5px 0;
+  cursor: pointer;
+  border-radius: 0;
+  text-align: left;
+  border-bottom: 0.5px solid var(--rule);
+  transition: background 0.15s;
+}
+.facet-row.no-glyph {
+  grid-template-columns: minmax(0, 1fr) 36px 32px;
+}
+.facet-row:last-child { border-bottom: none; }
+.facet-row:hover { background: var(--surface); }
+.facet-row.is-active .facet-name { color: var(--accent); font-style: italic; }
+.facet-row.is-active .facet-bar-fill { background: var(--accent); }
+.facet-row.is-active .facet-glyph { color: var(--accent); }
+
+.facet-glyph {
+  font-size: 14px;
+  color: var(--ink2);
+}
+.facet-name {
+  font-family: var(--display-font);
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.facet-bar-track {
+  height: 2px;
+  background: var(--rule);
+  position: relative;
+}
+.facet-bar-fill {
+  position: absolute; inset: 0 auto 0 0;
+  background: var(--ink2);
+  height: 100%;
+}
+.facet-count {
+  font-family: var(--mono-font);
+  font-size: 10.5px;
+  color: var(--ink2);
+  letter-spacing: 0.04em;
+  text-align: right;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ==============================================================
+   CONTROL BAR
+   ============================================================== */
+
+.control-bar {
+  padding: 14px 0;
+  border-top: 0.5px solid var(--rule-strong);
+  border-bottom: 0.5px solid var(--rule-strong);
+  margin-bottom: 28px;
+}
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.active-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--rule);
+}
+.active-chips-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-right: 4px;
+}
+.active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0.5px solid var(--ink);
+  padding: 4px 9px;
+  cursor: pointer;
+  border-radius: 0;
+  font-family: var(--mono-font);
+  font-size: 10px;
+}
+.active-chip-key {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.active-chip-val {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--paper);
+}
+.active-chip-x { opacity: 0.7; font-size: 12px; }
+.active-chip:hover .active-chip-x { opacity: 1; color: var(--accent2); }
+.active-chip-clear {
+  background: none;
+  border: none;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 4px;
+  border-bottom: 0.5px solid var(--accent);
+}
+.control-left, .control-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 0.5px solid var(--rule-strong);
+  padding: 4px 6px;
+  min-width: 220px;
+  transition: border-color 0.2s;
+}
+.search:focus-within { border-color: var(--accent); }
+.search-glyph {
+  font-size: 16px;
+  color: var(--ink3);
+}
+.search input {
+  border: none;
+  background: transparent;
+  font-family: var(--serif-font);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink);
+  flex: 1;
+  outline: none;
+}
+.search input::placeholder { color: var(--ink3); }
+.search-clear {
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: var(--ink3);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 0.5px solid var(--rule-strong);
+  background: transparent;
+  color: var(--ink2);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.pill:hover { color: var(--ink); border-color: var(--ink); }
+.pill-active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.pill-glyph { font-size: 11px; }
+
+.control-count {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  border-bottom: 0.5px solid var(--rule-strong);
+  padding: 4px 14px 4px 0;
+}
+.dropdown-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.dropdown select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  padding-right: 2px;
+}
+.dropdown-caret {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-45%);
+  font-size: 8px;
+  color: var(--ink2);
+  pointer-events: none;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0.5px solid var(--ink);
+  font-family: var(--mono-font);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.btn-add:hover { background: var(--accent); border-color: var(--accent); }
+.btn-add .plus { font-size: 14px; line-height: 0.8; }
+
+/* ==============================================================
+   SECTION HEADERS
+   ============================================================== */
+
+.section { margin-top: 28px; }
+.section:first-child { margin-top: 8px; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.section-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.section-title {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.section-rule {
+  flex: 1;
+  height: 0.5px;
+  background: var(--rule-strong);
+  align-self: center;
+}
+.section-count {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  color: var(--ink2);
+  letter-spacing: 0.08em;
+}
+
+/* ==============================================================
+   BOTTLE ROW
+   ============================================================== */
+
+.ledger { margin-top: 8px; }
+
+.bottle {
+  border-top: 0.5px solid var(--rule-strong);
+  padding: var(--row-pad);
+  transition: background 0.2s;
+}
+.section-body .bottle:last-child {
+  border-bottom: 0.5px solid var(--rule-strong);
+}
+.bottle.is-editing {
+  background: var(--paper);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.bottle-row {
+  display: grid;
+  grid-template-columns: 56px 1fr 200px;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .bottle-row {
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+  }
+  .bottle-side { grid-column: 1 / -1; padding-left: 50px; flex-direction: row; align-items: center; }
+}
+
+.bottle-num {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  padding-top: 6px;
+}
+
+.bottle-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  row-gap: 4px;
+}
+.bottle-name {
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  white-space: normal;
+}
+.bottle-age {
+  font-style: italic;
+  color: var(--ink2);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.bottle-edition {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--accent);
+}
+
+.bottle-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--serif-font);
+  font-size: 13.5px;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+.bottle-line .sep { color: var(--ink3); }
+.bottle-distillery { color: var(--ink); font-variant-caps: small-caps; letter-spacing: 0.04em; font-weight: 500; }
+.bottle-abv { font-family: var(--mono-font); font-size: 11.5px; color: var(--ink2); letter-spacing: 0.04em; }
+
+.bottle-notes {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 60ch;
+  margin: 8px 0 6px;
+  text-wrap: pretty;
+}
+
+.bottle-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.bottle-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* status tag */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 0.5px solid var(--rule-strong);
+  padding: 5px 10px;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.status-tag:hover { border-color: var(--ink); color: var(--ink); }
+.status-glyph { font-size: 10px; }
+.status-shelf .status-glyph { color: var(--ink2); }
+.status-drinking { color: var(--accent); border-color: var(--accent); }
+.status-drinking .status-glyph { color: var(--accent); }
+.status-to-try .status-glyph { color: var(--accent2); }
+.status-finished { color: var(--ink3); border-color: var(--rule); text-decoration: line-through; text-decoration-color: var(--ink3); text-decoration-thickness: 0.5px; }
+
+/* peat chip */
+.peat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink2);
+  text-transform: uppercase;
+}
+.peat-glyph {
+  display: inline-flex;
+  gap: 1.5px;
+  align-items: flex-end;
+  height: 10px;
+}
+.peat-bar {
+  width: 3px;
+  background: var(--rule-strong);
+}
+.peat-bar:nth-child(1) { height: 25%; }
+.peat-bar:nth-child(2) { height: 50%; }
+.peat-bar:nth-child(3) { height: 75%; }
+.peat-bar:nth-child(4) { height: 100%; }
+.peat-bar.on { background: var(--accent); }
+
+.bottle-actions {
+  margin-top: 4px;
+}
+.link {
+  background: none;
+  border: none;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  cursor: pointer;
+  padding: 2px 0;
+  border-bottom: 0.5px solid var(--rule-strong);
+  border-radius: 0;
+}
+.link:hover { color: var(--accent); border-color: var(--accent); }
+
+/* rating */
+.rating { display: flex; gap: 2px; }
+.star {
+  background: none;
+  border: none;
+  font-size: 15px;
+  color: var(--rule-strong);
+  cursor: pointer;
+  padding: 0 1px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.star.on { color: var(--accent); }
+.star:hover { transform: scale(1.15); }
+
+.bottle-added {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--ink3);
+  text-transform: uppercase;
+}
+
+/* ==============================================================
+   EDIT PANE
+   ============================================================== */
+
+.edit-pane {
+  margin-top: 18px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border: 0.5px solid var(--rule-strong);
+  border-left: 2px solid var(--accent);
+}
+.edit-pane-new {
+  border-left: 2px solid var(--accent);
+  border-top: 0;
+  margin-top: 0;
+}
+
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 18px;
+  margin-bottom: 14px;
+}
+@media (max-width: 720px) {
+  .edit-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.field input,
+.field select,
+.field textarea {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 0.5px solid var(--rule-strong);
+  font-family: var(--serif-font);
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.15s;
+}
+.field textarea {
+  border: 0.5px solid var(--rule-strong);
+  padding: 8px 10px;
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 16px;
+  resize: vertical;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--accent); }
+
+.edit-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+.edit-foot-right { display: flex; gap: 8px; }
+
+/* ---------- GitHub setup overlay ---------- */
+.setup-overlay {
+  position: fixed; inset: 0;
+  background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+.setup-box {
+  width: 100%;
+  max-width: 480px;
+  background: var(--paper);
+  border: 0.5px solid var(--rule);
+  padding: 48px 44px;
+  position: relative;
+}
+.setup-box::before, .setup-box::after {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px;
+  height: 0.5px;
+  background: var(--rule);
+}
+.setup-box::before { top: 8px; }
+.setup-box::after  { bottom: 8px; }
+.setup-eyebrow {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  margin-bottom: 14px;
+}
+.setup-title {
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 18px 0;
+}
+.setup-body {
+  font-family: var(--serif-font);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink2);
+  margin: 0 0 28px 0;
+}
+.setup-body code, .setup-hint code {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  background: var(--paper2);
+  padding: 1px 5px;
+  border: 0.5px solid var(--rule);
+}
+.setup-box .field { margin-bottom: 16px; }
+.setup-box .field input {
+  width: 100%;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  padding: 10px 12px;
+  border: 0.5px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  box-sizing: border-box;
+}
+.setup-box .field input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.setup-hint {
+  font-family: var(--serif-font);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink2);
+  margin: 18px 0 24px 0;
+}
+.setup-hint a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--accent);
+}
+.setup-error {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  color: #a32d2d;
+  background: #f8eded;
+  border: 0.5px solid #d4a8a8;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+.setup-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 0.5px solid var(--rule);
+}
+
+.register.loading {
+  min-height: 60vh;
+  display: flex; align-items: center; justify-content: center;
+}
+.loading-text {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink2);
+}
+
+.btn-primary, .btn-ghost, .btn-danger {
+  font-family: var(--mono-font);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border: 0.5px solid var(--ink);
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+.btn-primary:disabled { opacity: 0.4; cursor: default; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink2);
+  border: 0.5px solid var(--rule-strong);
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--ink3);
+  border: 0.5px solid transparent;
+}
+.btn-danger:hover { color: #a32d2d; border-color: #a32d2d; }
+
+/* ==============================================================
+   NEW ENTRY HEAD
+   ============================================================== */
+
+.bottle.is-new {
+  background: var(--paper);
+  border-top: 0.5px solid var(--rule-strong);
+  border-bottom: 0.5px solid var(--rule-strong);
+  padding: 18px 22px;
+  margin-bottom: 12px;
+}
+.new-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.new-num {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.new-label {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+}
+.new-rule {
+  flex: 1;
+  height: 0.5px;
+  background: var(--rule-strong);
+}
+
+/* ==============================================================
+   EMPTY / COLOPHON
+   ============================================================== */
+
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 60px 0;
+}
+.empty-rule {
+  flex: 1;
+  height: 0.5px;
+  background: var(--rule-strong);
+}
+.empty-text {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink3);
+}
+
+.colophon {
+  margin-top: 60px;
+}
+.colophon-rule {
+  border-top: 2px solid var(--ink);
+  border-bottom: 0.5px solid var(--ink);
+  height: 6px;
+  margin-bottom: 16px;
+}
+.colophon-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.colophon-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink2);
+}
+.colophon-text {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink2);
+  flex: 1;
+}
+.colophon-mark {
+  font-family: var(--display-font);
+  font-size: 24px;
+  color: var(--accent);
+}
+
+
+/* ==============================================================
+   ADDITIONS for 790-bottle dataset
+   ============================================================== */
+
+.link-inline {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+  border-bottom: 0.5px solid transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+.link-inline:hover { color: var(--accent); border-color: var(--accent); }
+.link-inline.subtle { color: var(--ink2); }
+.link-inline.subtle:hover { color: var(--accent); }
+.country-glyph {
+  display: inline-block;
+  margin-right: 4px;
+  color: var(--accent);
+}
+
+.cask-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 6px 0 4px;
+}
+.cask-chip {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0.5px solid var(--rule-strong);
+  color: var(--ink2);
+  padding: 3px 8px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.cask-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+.cask-strength-mark {
+  font-family: var(--display-font);
+  font-size: 22px;
+  color: var(--accent);
+  font-style: italic;
+  line-height: 1;
+}
+
+.abv-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-left: 0.5px solid var(--rule-strong);
+  padding-left: 16px;
+}
+.abv-num {
+  font-family: var(--display-font);
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+  font-feature-settings: "lnum" 1;
+}
+.abv-label {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-top: 3px;
+}
+
+.bottle-meta-mark {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.meta-pip {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink2);
+}
+.meta-pip.mono {
+  font-family: var(--mono-font);
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink2);
+}
+.meta-pip.mark-good {
+  font-family: var(--mono-font);
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  margin-bottom: 12px;
+  border-bottom: 0.5px solid var(--rule);
+  flex-wrap: wrap;
+}
+.pagination-bottom {
+  margin-top: 24px;
+  border-bottom: none;
+  border-top: 0.5px solid var(--rule);
+  padding-top: 16px;
+}
+.pagination-text {
+  font-family: var(--mono-font);
+  font-size: 10.5px;
+  color: var(--ink2);
+  letter-spacing: 0.06em;
+}
+.pagination-text strong { color: var(--ink); font-weight: 500; }
+.pagination-rule {
+  flex: 1;
+  height: 0.5px;
+  background: var(--rule-strong);
+  min-width: 20px;
+}
+.pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.page-btn {
+  background: transparent;
+  border: 0.5px solid var(--rule-strong);
+  color: var(--ink2);
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.page-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.page-num {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.cask-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.cask-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--ink2);
+  border: 0.5px solid var(--rule-strong);
+  padding: 4px 9px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.cask-pick input { display: none; }
+.cask-pick.on {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.flag-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.field-wide { grid-column: span 3; }
+@media (max-width: 720px) {
+  .field-wide { grid-column: span 2; }
+}
+.edit-flags {
+  grid-template-columns: 1fr 1fr !important;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.bottle-side {
+  min-width: 140px;
+}
+
   </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
 <body>
+  <div id="root"></div>
 
-<div class="setup-overlay" id="setup-overlay">
-  <div class="setup-box">
-    <h2>Set up your whisky tracker</h2>
-    <p>Your collection is stored as a JSON file in your GitHub repository. Enter your details once — they're saved only in this browser.</p>
-    <label>GitHub username</label>
-    <input type="text" id="setup-user" placeholder="e.g. davidsmith" />
-    <label>Repository name</label>
-    <input type="text" id="setup-repo" placeholder="e.g. whisky-collection" />
-    <label>Personal Access Token (<a href="https://github.com/settings/tokens/new?scopes=repo&description=Whisky+Tracker" target="_blank">generate one here</a> — needs <code>repo</code> scope)</label>
-    <input type="password" id="setup-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-    <div class="error-msg" id="setup-error"></div>
-    <div class="form-footer">
-      <button class="primary" id="setup-save">Connect to GitHub</button>
-    </div>
-  </div>
-</div>
+  <script type="text/babel">
 
-<header>
-  <h1>Whisky Collection</h1>
-  <div class="sync-row">
-    <div id="sync-dot"></div>
-    <span id="sync-label">Loading...</span>
-    <button id="btn-save" disabled style="margin-left:4px;">Save</button>
-    <button id="btn-settings" style="margin-left:4px;" title="Settings">&#9881;</button>
-  </div>
-</header>
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
-<main>
-  <div class="stats" id="stats"></div>
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
 
-  <div class="card">
-    <div class="card-title">Add a bottle</div>
-    <div class="g2">
-      <input type="text" id="f-name" placeholder="Name (e.g. Lagavulin 16)" />
-      <input type="text" id="f-distillery" placeholder="Distillery / producer" />
-    </div>
-    <div class="g3">
-      <select id="f-type">
-        <option value="">Type</option>
-        <option>Single malt Scotch</option>
-        <option>Blended Scotch</option>
-        <option>Bourbon</option>
-        <option>Rye</option>
-        <option>Irish</option>
-        <option>Japanese</option>
-        <option>Other</option>
-      </select>
-      <select id="f-status">
-        <option value="shelf">Shelf — keep sealed</option>
-        <option value="drinking">Open — drinking</option>
-        <option value="to-try">To try</option>
-        <option value="finished">Finished</option>
-      </select>
-      <input type="text" id="f-ppm" placeholder="PPM (if peated)" />
-    </div>
-    <textarea id="f-notes" placeholder="Notes — occasion, who gave it, tasting impressions..."></textarea>
-    <div class="form-footer">
-      <button class="primary" id="btn-add">Add to collection</button>
-    </div>
-  </div>
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
 
-  <div class="filters">
-    <select id="filter-status">
-      <option value="all">All bottles</option>
-      <option value="shelf">Shelf only</option>
-      <option value="drinking">Open / drinking</option>
-      <option value="to-try">To try</option>
-      <option value="finished">Finished</option>
-    </select>
-    <select id="filter-type">
-      <option value="all">All types</option>
-      <option>Single malt Scotch</option>
-      <option>Blended Scotch</option>
-      <option>Bourbon</option>
-      <option>Rye</option>
-      <option>Irish</option>
-      <option>Japanese</option>
-      <option>Other</option>
-    </select>
-    <span class="count" id="count-label"></span>
-  </div>
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
 
-  <div id="bottle-list"></div>
-</main>
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
 
-<script>
-const STATUS_META = {
-  'shelf':    { label:'Shelf — sealed',   cls:'badge-shelf'    },
-  'drinking': { label:'Open — drinking',  cls:'badge-drinking' },
-  'to-try':   { label:'To try',           cls:'badge-to-try'   },
-  'finished': { label:'Finished',         cls:'badge-finished' },
-};
-const TYPES = ['Single malt Scotch','Blended Scotch','Bourbon','Rye','Irish','Japanese','Other'];
-const DATA_FILE = 'collection.json';
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
 
-let cfg = {}, collection = [], nextId = 1, sha = null, editingId = null;
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
 
-function loadCfg() { try { cfg = JSON.parse(localStorage.getItem('whisky-cfg') || '{}'); } catch(e) { cfg = {}; } }
-function saveCfg() { localStorage.setItem('whisky-cfg', JSON.stringify(cfg)); }
-function isConfigured() { return cfg.user && cfg.repo && cfg.token; }
-function apiUrl() { return `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${DATA_FILE}`; }
-function apiHeaders() {
-  return { 'Authorization':`token ${cfg.token}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' };
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
 }
 
-function setSyncState(state, msg) {
-  const colors = { ok:'#1D9E75', saving:'#BA7517', error:'#A32D2D', loading:'#888', dirty:'#BA7517' };
-  document.getElementById('sync-dot').style.background = colors[state] || '#888';
-  document.getElementById('sync-label').textContent = msg;
-  document.getElementById('btn-save').disabled = (state !== 'dirty');
-}
-
-async function loadFromGitHub() {
-  setSyncState('loading', 'Loading...');
-  try {
-    const res = await fetch(apiUrl(), { headers: apiHeaders() });
-    if (res.status === 404) { collection = []; nextId = 1; sha = null; setSyncState('ok','Ready'); render(); return; }
-    if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
-    const json = await res.json();
-    sha = json.sha;
-    const decoded = JSON.parse(atob(json.content.replace(/\n/g,'')));
-    collection = decoded.collection || [];
-    nextId = decoded.nextId || (collection.length + 1);
-    setSyncState('ok', 'Loaded from GitHub');
-    render();
-  } catch(e) { setSyncState('error', 'Load failed'); console.error(e); }
-}
-
-async function saveToGitHub() {
-  setSyncState('saving', 'Saving...');
-  document.getElementById('btn-save').disabled = true;
-  const payload = JSON.stringify({ collection, nextId }, null, 2);
-  const body = { message:`Update collection — ${new Date().toLocaleString()}`, content: btoa(unescape(encodeURIComponent(payload))) };
-  if (sha) body.sha = sha;
-  try {
-    const res = await fetch(apiUrl(), { method:'PUT', headers: apiHeaders(), body: JSON.stringify(body) });
-    if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
-    sha = (await res.json()).content.sha;
-    setSyncState('ok', 'Saved to GitHub');
-  } catch(e) { setSyncState('error', 'Save failed — try again'); document.getElementById('btn-save').disabled = false; }
-}
-
-function markDirty() { setSyncState('dirty', 'Unsaved changes'); }
-
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function typeOptions(sel) {
-  return TYPES.map(t => `<option ${t===sel?'selected':''}>${t}</option>`).join('');
-}
-
-function statusOptions(sel) {
-  return Object.entries(STATUS_META).map(([k,v]) =>
-    `<option value="${k}" ${k===sel?'selected':''}>${v.label}</option>`
-  ).join('');
-}
-
-function render() {
-  const fs = document.getElementById('filter-status').value;
-  const ft = document.getElementById('filter-type').value;
-  const filtered = collection.filter(b => (fs==='all'||b.status===fs) && (ft==='all'||b.type===ft));
-
-  document.getElementById('count-label').textContent =
-    `${filtered.length} of ${collection.length} bottle${collection.length!==1?'s':''}`;
-
-  const counts = { shelf:0, drinking:0, 'to-try':0, finished:0 };
-  collection.forEach(b => { if (counts[b.status]!==undefined) counts[b.status]++; });
-  document.getElementById('stats').innerHTML = [
-    ['Total',collection.length],['On shelf',counts.shelf],['Open',counts.drinking],['To try',counts['to-try']]
-  ].map(([l,v]) => `<div class="stat"><div class="stat-label">${l}</div><div class="stat-val">${v}</div></div>`).join('');
-
-  const list = document.getElementById('bottle-list');
-  if (!filtered.length) { list.innerHTML = `<div class="empty">No bottles match this filter.</div>`; return; }
-
-  list.innerHTML = filtered.map(b => {
-    const sm = STATUS_META[b.status] || STATUS_META['to-try'];
-    const stars = [1,2,3,4,5].map(i =>
-      `<span class="star ${(b.rating||0)>=i?'on':''}" onclick="setRating(${b.id},${i})">&#9733;</span>`
-    ).join('');
-    const isEditing = editingId === b.id;
-    return `
-    <div class="bottle" id="bottle-${b.id}">
-      <div class="bottle-view">
-        <div class="bottle-top">
-          <div class="bottle-info">
-            <div class="bottle-name-row">
-              <span class="bottle-name">${esc(b.name)}</span>
-              <span class="badge ${sm.cls}">${sm.label}</span>
-              ${b.ppm?`<span class="ppm-tag">${esc(b.ppm)} ppm</span>`:''}
-            </div>
-            <div class="bottle-meta">${[b.distillery,b.type].filter(Boolean).map(esc).join(' · ')}</div>
-            <div class="rating">${stars}</div>
-            ${b.notes?`<div class="bottle-notes">${esc(b.notes)}</div>`:''}
-          </div>
-          <div class="bottle-btns">
-            <button class="sm" onclick="toggleEdit(${b.id})">${isEditing?'Cancel':'Edit'}</button>
-            <button class="sm danger" onclick="remove(${b.id})">Remove</button>
-          </div>
-        </div>
-      </div>
-      <div class="bottle-edit ${isEditing?'open':''}" id="edit-${b.id}">
-        <div class="g2">
-          <input type="text" id="e-name-${b.id}" value="${esc(b.name)}" placeholder="Name" />
-          <input type="text" id="e-dist-${b.id}" value="${esc(b.distillery||'')}" placeholder="Distillery" />
-        </div>
-        <div class="g3">
-          <select id="e-type-${b.id}"><option value="">Type</option>${typeOptions(b.type)}</select>
-          <select id="e-status-${b.id}">${statusOptions(b.status)}</select>
-          <input type="text" id="e-ppm-${b.id}" value="${esc(b.ppm||'')}" placeholder="PPM" />
-        </div>
-        <textarea id="e-notes-${b.id}" placeholder="Notes...">${esc(b.notes||'')}</textarea>
-        <div class="edit-footer">
-          <button class="sm danger" onclick="remove(${b.id})">Remove bottle</button>
-          <div style="display:flex;gap:8px;">
-            <button class="sm" onclick="toggleEdit(${b.id})">Cancel</button>
-            <button class="sm primary" onclick="saveEdit(${b.id})">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleEdit(id) {
-  editingId = (editingId === id) ? null : id;
-  render();
-  if (editingId) {
-    const el = document.getElementById(`edit-${id}`);
-    if (el) setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'nearest' }), 50);
-  }
-}
-
-function saveEdit(id) {
-  const b = collection.find(x => x.id === id);
-  if (!b) return;
-  const name = document.getElementById(`e-name-${id}`).value.trim();
-  if (!name) { document.getElementById(`e-name-${id}`).focus(); return; }
-  b.name       = name;
-  b.distillery = document.getElementById(`e-dist-${id}`).value.trim();
-  b.type       = document.getElementById(`e-type-${id}`).value;
-  b.status     = document.getElementById(`e-status-${id}`).value;
-  b.ppm        = document.getElementById(`e-ppm-${id}`).value.trim();
-  b.notes      = document.getElementById(`e-notes-${id}`).value.trim();
-  editingId = null;
-  markDirty(); render();
-}
-
-function setRating(id, val) {
-  const b = collection.find(x => x.id === id);
-  if (b) { b.rating = (b.rating === val) ? 0 : val; markDirty(); render(); }
-}
-
-function remove(id) {
-  if (!confirm('Remove this bottle?')) return;
-  collection = collection.filter(x => x.id !== id);
-  if (editingId === id) editingId = null;
-  markDirty(); render();
-}
-
-document.getElementById('btn-add').onclick = () => {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { document.getElementById('f-name').focus(); return; }
-  collection.unshift({
-    id: nextId++, name,
-    distillery: document.getElementById('f-distillery').value.trim(),
-    type:   document.getElementById('f-type').value,
-    status: document.getElementById('f-status').value || 'shelf',
-    ppm:    document.getElementById('f-ppm').value.trim(),
-    notes:  document.getElementById('f-notes').value.trim(),
-    rating: 0, added: new Date().toISOString().split('T')[0],
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  // Auto-inject a rail toggle when a <deck-stage> is on the page. The
+  // toggle drives the deck's per-viewer _railVisible via window message;
+  // state is mirrored from the same localStorage key the deck reads so
+  // the control reflects reality across reloads. The mechanism is the
+  // message — authors who want custom placement can post it directly
+  // and pass noDeckControls to suppress this one.
+  const hasDeckStage = React.useMemo(
+    () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    [],
+  );
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try { return localStorage.getItem('deck-stage.railVisible') !== '0'; } catch (e) { return true; }
   });
-  ['f-name','f-distillery','f-ppm','f-notes'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('f-type').value='';
-  document.getElementById('f-status').value='shelf';
-  markDirty(); render();
-};
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
 
-document.getElementById('btn-save').onclick = saveToGitHub;
-document.getElementById('filter-status').onchange = render;
-document.getElementById('filter-type').onchange = render;
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
 
-document.getElementById('btn-settings').onclick = () => {
-  document.getElementById('setup-user').value  = cfg.user  || '';
-  document.getElementById('setup-repo').value  = cfg.repo  || '';
-  document.getElementById('setup-token').value = cfg.token || '';
-  document.getElementById('setup-overlay').style.display = 'flex';
-};
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
 
-document.getElementById('setup-save').onclick = async () => {
-  const user  = document.getElementById('setup-user').value.trim();
-  const repo  = document.getElementById('setup-repo').value.trim();
-  const token = document.getElementById('setup-token').value.trim();
-  const err   = document.getElementById('setup-error');
-  if (!user || !repo || !token) { err.textContent = 'All fields are required.'; return; }
-  err.textContent = 'Checking...';
-  document.getElementById('setup-save').disabled = true;
-  try {
-    const res = await fetch(`https://api.github.com/repos/${user}/${repo}`, {
-      headers: { 'Authorization':`token ${token}`, 'Accept':'application/vnd.github.v3+json' }
-    });
-    if (res.status === 401) throw new Error('Invalid token — check it was copied correctly.');
-    if (res.status === 404) throw new Error('Repo not found — check username and repo name.');
-    if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
-    cfg = { user, repo, token }; saveCfg();
-    document.getElementById('setup-overlay').style.display = 'none';
-    err.textContent = '';
-    loadFromGitHub();
-  } catch(e) {
-    err.textContent = e.message;
-  } finally {
-    document.getElementById('setup-save').disabled = false;
-  }
-};
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
-loadCfg();
-if (isConfigured()) {
-  document.getElementById('setup-overlay').style.display = 'none';
-  loadFromGitHub();
-} else {
-  document.getElementById('setup-overlay').style.display = 'flex';
-  setSyncState('loading', 'Not connected');
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {hasDeckStage && !noDeckControls && (
+            <TweakSection label="Deck">
+              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+            </TweakSection>
+          )}
+          {children}
+        </div>
+      </div>
+    </>
+  );
 }
-</script>
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+  </script>
+
+  <script type="text/babel">
+// Whisky Cellar Register — main app
+// Editorial / archival aesthetic: cream paper, deep ink, single amber accent.
+
+const { useState, useEffect, useMemo, useRef } = React;
+
+// ---------- Tweakable design tokens ----------
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "paper",
+  "density": "comfortable",
+  "showRegionMap": true,
+  "groupBy": "country",
+  "displayFont": "cormorant",
+  "accent": "#8a4a1f",
+  "pageSize": 50
+}/*EDITMODE-END*/;
+
+const THEMES = {
+  paper:   { bg: "#f3ecdf", bg2: "#ebe2cf", paper: "#f8f3e6", ink: "#1f1a14", ink2: "#5a4f3f", ink3: "#8a7d6a", rule: "#1f1a1422", ruleStrong: "#1f1a1455", accent: "#8a4a1f", accent2: "#b8763c", surface: "#fbf7ec" },
+  ink:     { bg: "#16140f", bg2: "#1d1a13", paper: "#1a1711", ink: "#efe7d4", ink2: "#a89c83", ink3: "#6e6553", rule: "#efe7d422", ruleStrong: "#efe7d455", accent: "#d99a4f", accent2: "#e8b576", surface: "#221d14" },
+  bone:    { bg: "#ecebe6", bg2: "#e3e1d9", paper: "#f5f3ec", ink: "#1a1a1a", ink2: "#555550", ink3: "#8c8a82", rule: "#1a1a1a22", ruleStrong: "#1a1a1a55", accent: "#5e3a1d", accent2: "#8a5a30", surface: "#faf9f3" }
+};
+
+const DISPLAY_FONTS = {
+  cormorant: `"Cormorant Garamond", "EB Garamond", Georgia, serif`,
+  newsreader: `"Newsreader", "Source Serif Pro", Georgia, serif`,
+  ibmplex: `"IBM Plex Serif", Georgia, serif`,
+};
+
+// ---------- GitHub sync ----------
+const DATA_FILE = "collection.json";
+const CFG_KEY = "whisky-cfg";
+const loadCfg = () => { try { return JSON.parse(localStorage.getItem(CFG_KEY) || "{}"); } catch { return {}; } };
+const saveCfg = (c) => localStorage.setItem(CFG_KEY, JSON.stringify(c));
+const isConfigured = (c) => c && c.user && c.repo && c.token;
+const apiUrl = (c) => `https://api.github.com/repos/${c.user}/${c.repo}/contents/${DATA_FILE}`;
+const apiHeaders = (c) => ({ "Authorization": `token ${c.token}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" });
+const normalize = (b) => ({
+  ...b,
+  rating: b.rating || 0,
+  ppm: b.ppm || 0,
+  cask_types: Array.isArray(b.cask_types) ? b.cask_types : [],
+  awards: Array.isArray(b.awards) ? b.awards : [],
+});
+const decodePayload = (b64) => {
+  const decoded = JSON.parse(atob(b64.replace(/\n/g, "")));
+  // Support both shapes: bare array OR {collection, nextId}
+  if (Array.isArray(decoded)) {
+    return { collection: decoded.map(normalize), nextId: (decoded.length ? Math.max(...decoded.map(b => b.id || 0)) + 1 : 1) };
+  }
+  return {
+    collection: (decoded.collection || []).map(normalize),
+    nextId: decoded.nextId || (decoded.collection ? decoded.collection.length + 1 : 1),
+  };
+};
+const encodePayload = (collection, nextId) => {
+  // Write as a bare array (matches the new dataset shape)
+  const json = JSON.stringify(collection, null, 2);
+  return btoa(unescape(encodeURIComponent(json)));
+};
+
+// ---------- Utility ----------
+const fmtDate = (iso) => {
+  if (!iso) return "—";
+  const d = new Date(iso + "T00:00");
+  if (isNaN(d)) return iso;
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+};
+const romanize = (n) => {
+  if (!n && n !== 0) return "";
+  const map = [["M",1000],["CM",900],["D",500],["CD",400],["C",100],["XC",90],["L",50],["XL",40],["X",10],["IX",9],["V",5],["IV",4],["I",1]];
+  let r = "", x = Math.abs(n);
+  for (const [s, v] of map) { while (x >= v) { r += s; x -= v; } }
+  return r;
+};
+const ageFromName = (name) => {
+  const m = (name || "").match(/\b(\d{1,2})\s*Yo\b/i) || (name || "").match(/\b(\d{1,2})\s*(?:yr|year)/i);
+  return m ? Number(m[1]) : null;
+};
+const COUNTRY_GLYPH = {
+  "Scotland": "✦",
+  "United States": "☆",
+  "Ireland": "❖",
+  "Other": "◇"
+};
+
+// ---------- Root ----------
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const theme = THEMES[tweaks.theme] || THEMES.paper;
+
+  const [collection, setCollection] = useState([]);
+  const [nextId, setNextId] = useState(1);
+  const [sha, setSha] = useState(null);
+  const [cfg, setCfg] = useState(() => loadCfg());
+  const [showSetup, setShowSetup] = useState(() => !isConfigured(loadCfg()));
+  const [syncState, setSyncState] = useState({ kind: "loading", msg: "Loading…" });
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
+  const [filter, setFilter] = useState({ country: "all", type: "all", region: "all", cask: "all", q: "" });
+  const [sort, setSort] = useState("name");
+  const [page, setPage] = useState(0);
+  const [dirty, setDirty] = useState(false);
+  const [savedAt, setSavedAt] = useState(null);
+
+  // Apply CSS variables from theme
+  useEffect(() => {
+    const r = document.documentElement;
+    Object.entries(theme).forEach(([k, v]) => r.style.setProperty(`--${k}`, v));
+    r.style.setProperty("--accent", tweaks.accent || theme.accent);
+    r.style.setProperty("--display-font", DISPLAY_FONTS[tweaks.displayFont] || DISPLAY_FONTS.cormorant);
+    r.style.setProperty("--row-pad", tweaks.density === "compact" ? "10px 0" : tweaks.density === "spacious" ? "22px 0" : "16px 0");
+    document.body.style.background = theme.bg;
+  }, [theme, tweaks.accent, tweaks.displayFont, tweaks.density]);
+
+  // Load from GitHub when configured
+  const loadFromGitHub = async (config) => {
+    setSyncState({ kind: "loading", msg: "Loading from GitHub…" });
+    setLoading(true);
+    try {
+      const res = await fetch(apiUrl(config), { headers: apiHeaders(config) });
+      if (res.status === 404) {
+        setCollection([]); setNextId(1); setSha(null);
+        setSyncState({ kind: "ok", msg: "Ready — empty register" });
+        setSavedAt(new Date());
+        setLoading(false);
+        return;
+      }
+      if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
+      const json = await res.json();
+      const { collection: arr, nextId: nid } = decodePayload(json.content);
+      setSha(json.sha);
+      setCollection(arr);
+      setNextId(nid);
+      setSyncState({ kind: "ok", msg: "Loaded from GitHub" });
+      setSavedAt(new Date());
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      setSyncState({ kind: "error", msg: "Load failed" });
+      setLoading(false);
+    }
+  };
+
+  const saveToGitHub = async () => {
+    if (!isConfigured(cfg)) { setShowSetup(true); return; }
+    setSyncState({ kind: "saving", msg: "Saving…" });
+    const body = {
+      message: `Update collection — ${new Date().toLocaleString()}`,
+      content: encodePayload(collection, nextId),
+    };
+    if (sha) body.sha = sha;
+    try {
+      const res = await fetch(apiUrl(cfg), { method: "PUT", headers: apiHeaders(cfg), body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
+      const json = await res.json();
+      setSha(json.content.sha);
+      setSyncState({ kind: "ok", msg: "Saved to GitHub" });
+      setSavedAt(new Date());
+      setDirty(false);
+    } catch (e) {
+      console.error(e);
+      setSyncState({ kind: "error", msg: "Save failed — try again" });
+    }
+  };
+
+  useEffect(() => {
+    if (isConfigured(cfg)) {
+      loadFromGitHub(cfg);
+    } else {
+      setLoading(false);
+      setSyncState({ kind: "loading", msg: "Not connected" });
+    }
+  }, []);
+
+  useEffect(() => { setPage(0); }, [filter, sort, tweaks.groupBy]);
+
+  // Facets
+  const facets = useMemo(() => {
+    const f = { countries: {}, types: {}, regions: {}, casks: {}, distilleries: {} };
+    collection.forEach(b => {
+      f.countries[b.country] = (f.countries[b.country] || 0) + 1;
+      f.types[b.type] = (f.types[b.type] || 0) + 1;
+      f.regions[b.region] = (f.regions[b.region] || 0) + 1;
+      f.distilleries[b.distillery] = (f.distilleries[b.distillery] || 0) + 1;
+      (b.cask_types || []).forEach(c => f.casks[c] = (f.casks[c] || 0) + 1);
+    });
+    return f;
+  }, [collection]);
+
+  const filtered = useMemo(() => {
+    const q = filter.q.toLowerCase();
+    return collection.filter(b =>
+      (filter.country === "all" || b.country === filter.country) &&
+      (filter.type === "all" || b.type === filter.type) &&
+      (filter.region === "all" || b.region === filter.region) &&
+      (filter.cask === "all" || (b.cask_types || []).includes(filter.cask)) &&
+      (q === "" || (b.name + " " + (b.distillery||"") + " " + (b.region||"") + " " + (b.type||"") + " " + (b.country||"") + " " + (b.info_notes||"") + " " + (b.tasting_notes||""))
+        .toLowerCase().includes(q))
+    );
+  }, [collection, filter]);
+
+  const sorted = useMemo(() => {
+    const cmp = {
+      "name":      (a,b) => a.name.localeCompare(b.name),
+      "abv-desc":  (a,b) => (b.abv||0) - (a.abv||0),
+      "abv-asc":   (a,b) => (a.abv||0) - (b.abv||0),
+      "rating":    (a,b) => (b.rating||0) - (a.rating||0),
+      "added-desc":(a,b) => (b.added||"").localeCompare(a.added||""),
+      "distillery":(a,b) => (a.distillery||"").localeCompare(b.distillery||""),
+    }[sort] || (() => 0);
+    return [...filtered].sort(cmp);
+  }, [filtered, sort]);
+
+  const grouped = useMemo(() => {
+    if (tweaks.groupBy === "none") return [["", sorted]];
+    const groups = {};
+    const keyFn = {
+      country: b => b.country || "—",
+      type: b => b.type || "—",
+      region: b => b.region || "—",
+      distillery: b => b.distillery || "—",
+    }[tweaks.groupBy] || (() => "");
+    sorted.forEach(b => {
+      const k = keyFn(b);
+      (groups[k] ||= []).push(b);
+    });
+    // Stable order: countries by canonical order, others alphabetical
+    let entries = Object.entries(groups);
+    if (tweaks.groupBy === "country") {
+      const order = ["Scotland","United States","Ireland","Other"];
+      entries.sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]));
+    } else {
+      entries.sort((a, b) => b[1].length - a[1].length);
+    }
+    return entries;
+  }, [sorted, tweaks.groupBy]);
+
+  // Pagination over filtered list (flat) — but groups stay
+  const PAGE_SIZE = tweaks.pageSize || 50;
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const pagedIds = useMemo(() => {
+    const start = page * PAGE_SIZE;
+    return new Set(sorted.slice(start, start + PAGE_SIZE).map(b => b.id));
+  }, [sorted, page, PAGE_SIZE]);
+  const pagedGroups = useMemo(() => {
+    return grouped
+      .map(([k, arr]) => [k, arr.filter(b => pagedIds.has(b.id))])
+      .filter(([, arr]) => arr.length);
+  }, [grouped, pagedIds]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const abvs = collection.map(b => b.abv).filter(a => a > 0);
+    const avgAbv = abvs.length ? (abvs.reduce((s,a) => s+a, 0) / abvs.length) : 0;
+    const caskStrength = collection.filter(b => (b.abv || 0) >= 50).length;
+    return {
+      total: collection.length,
+      countries: Object.keys(facets.countries).length,
+      distilleries: Object.keys(facets.distilleries).length,
+      types: Object.keys(facets.types).length,
+      regions: Object.keys(facets.regions).length,
+      avgAbv: avgAbv.toFixed(1),
+      caskStrength,
+    };
+  }, [collection, facets]);
+
+  // Handlers
+  const update = (id, patch) => {
+    setCollection(cs => cs.map(b => b.id === id ? { ...b, ...patch } : b));
+    setDirty(true);
+    setSyncState({ kind: "dirty", msg: "Unsaved changes" });
+  };
+  const remove = (id) => {
+    setCollection(cs => cs.filter(b => b.id !== id));
+    if (editingId === id) setEditingId(null);
+    setDirty(true);
+    setSyncState({ kind: "dirty", msg: "Unsaved changes" });
+  };
+  const addBottle = (b) => {
+    setCollection(cs => [normalize({ ...b, id: nextId, rating: 0, status: "available", added: new Date().toISOString().split("T")[0] }), ...cs]);
+    setNextId(n => n + 1);
+    setDirty(true);
+    setSyncState({ kind: "dirty", msg: "Unsaved changes" });
+  };
+  const handleConnect = (newCfg) => {
+    setCfg(newCfg);
+    saveCfg(newCfg);
+    setShowSetup(false);
+    loadFromGitHub(newCfg);
+  };
+
+  if (showSetup) {
+    return <SetupOverlay cfg={cfg} onConnect={handleConnect} onCancel={isConfigured(cfg) ? () => setShowSetup(false) : null} />;
+  }
+
+  if (loading) {
+    return (
+      <div className="register loading">
+        <div className="loading-text">Pulling the ledger from the cellar…</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="register">
+      {showSetup && <SetupOverlay cfg={cfg} onConnect={handleConnect} onCancel={() => setShowSetup(false)} />}
+      <Masthead stats={stats} syncState={syncState} dirty={dirty} savedAt={savedAt} onSave={saveToGitHub} onOpenSetup={() => setShowSetup(true)} />
+
+      <ControlBar
+        filter={filter} setFilter={setFilter}
+        sort={sort} setSort={setSort}
+        groupBy={tweaks.groupBy}
+        setGroupBy={(v) => setTweak("groupBy", v)}
+        count={sorted.length}
+        total={collection.length}
+        facets={facets}
+      />
+
+      {tweaks.showRegionMap && <FacetStrip facets={facets} filter={filter} setFilter={setFilter} />}
+
+      <Pagination page={page} totalPages={totalPages} onChange={setPage}
+        from={page * PAGE_SIZE + 1}
+        to={Math.min((page + 1) * PAGE_SIZE, sorted.length)}
+        total={sorted.length}
+      />
+
+      <div className="ledger">
+        {pagedGroups.map(([key, bottles]) => (
+          <Section key={key} title={key} count={bottles.length} groupBy={tweaks.groupBy} totalInGroup={
+            grouped.find(g => g[0] === key)?.[1].length || bottles.length
+          }>
+            {bottles.map((b) => (
+              <BottleRow
+                key={b.id}
+                bottle={b}
+                isEditing={editingId === b.id}
+                onEdit={() => setEditingId(b.id)}
+                onCancel={() => setEditingId(null)}
+                onSave={(patch) => { update(b.id, patch); setEditingId(null); }}
+                onRemove={() => remove(b.id)}
+                onRate={(v) => update(b.id, { rating: b.rating === v ? 0 : v })}
+                onPickFilter={(k, v) => setFilter(f => ({ ...f, [k]: f[k] === v ? "all" : v }))}
+              />
+            ))}
+          </Section>
+        ))}
+
+        {sorted.length === 0 && (
+          <div className="empty">
+            <div className="empty-rule" />
+            <div className="empty-text">No entries match.</div>
+            <div className="empty-rule" />
+          </div>
+        )}
+      </div>
+
+      {sorted.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} onChange={setPage}
+          from={page * PAGE_SIZE + 1}
+          to={Math.min((page + 1) * PAGE_SIZE, sorted.length)}
+          total={sorted.length}
+          bottom
+        />
+      )}
+
+      <Colophon stats={stats} />
+
+      <TweaksPanelHost tweaks={tweaks} setTweak={setTweak} />
+    </div>
+  );
+}
+
+// ---------- Header / Masthead ----------
+function Masthead({ stats, syncState, dirty, savedAt, onSave, onOpenSetup }) {
+  const syncClass = syncState.kind;
+  return (
+    <header className="masthead" data-screen-label="Cellar Register">
+      <div className="masthead-top">
+        <div className="masthead-left">
+          <div className="meta-line">
+            <span>Vol. {romanize(new Date().getFullYear() - 2020)}</span>
+            <span className="dot">·</span>
+            <span>No. {String(stats.total).padStart(3, "0")}</span>
+            <span className="dot">·</span>
+            <span>{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}</span>
+          </div>
+        </div>
+        <div className="masthead-right">
+          <div className={`sync ${syncClass}`}>
+            <span className="sync-dot" />
+            <span className="sync-text">{syncState.msg}</span>
+            <button className="btn-link" onClick={onSave} disabled={!dirty}>Commit</button>
+            <button className="btn-link" onClick={onOpenSetup} title="GitHub settings">⚙</button>
+          </div>
+        </div>
+      </div>
+
+      <h1 className="title">
+        <span className="title-the">The</span>
+        <span className="title-main">Cellar Register</span>
+      </h1>
+      <div className="subtitle">
+        <span>A private catalogue of {stats.total} bottles —</span>
+        <span className="kept">drawn from {stats.countries} countries &amp; {stats.distilleries} distilleries</span>
+      </div>
+
+      <div className="masthead-rule" />
+
+      <div className="stats">
+        <Stat label="Bottles in register" value={stats.total.toLocaleString()} />
+        <Stat label="Distilleries" value={stats.distilleries} accent />
+        <Stat label="Countries of origin" value={stats.countries} />
+        <Stat label="Categories" value={stats.types} />
+      </div>
+    </header>
+  );
+}
+
+function Stat({ label, value, accent, subtle }) {
+  return (
+    <div className={`stat ${accent ? "stat-accent" : ""} ${subtle ? "stat-subtle" : ""}`}>
+      <div className="stat-val">{value}</div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+}
+
+// ---------- Facet strip ----------
+function FacetStrip({ facets, filter, setFilter }) {
+  const countries = Object.entries(facets.countries).sort((a, b) => b[1] - a[1]);
+  const topRegions = Object.entries(facets.regions).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const topCasks = Object.entries(facets.casks).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const max = (entries) => Math.max(...entries.map(([,n]) => n), 1);
+
+  return (
+    <section className="facet-strip" aria-label="Browse">
+      <div className="facet-grid">
+        <FacetColumn
+          title="Origin"
+          subtitle="by country"
+          entries={countries}
+          max={max(countries)}
+          active={filter.country}
+          glyph={(name) => COUNTRY_GLYPH[name] || "◇"}
+          onPick={(v) => setFilter(f => ({ ...f, country: f.country === v ? "all" : v }))}
+        />
+        <FacetColumn
+          title="Region"
+          subtitle="top 12"
+          entries={topRegions}
+          max={max(topRegions)}
+          active={filter.region}
+          onPick={(v) => setFilter(f => ({ ...f, region: f.region === v ? "all" : v }))}
+        />
+        <FacetColumn
+          title="Cask"
+          subtitle="finishing"
+          entries={topCasks}
+          max={max(topCasks)}
+          active={filter.cask}
+          onPick={(v) => setFilter(f => ({ ...f, cask: f.cask === v ? "all" : v }))}
+        />
+      </div>
+    </section>
+  );
+}
+
+function FacetColumn({ title, subtitle, entries, max, active, onPick, glyph }) {
+  return (
+    <div className="facet-col">
+      <div className="facet-head">
+        <span className="facet-label">{title}</span>
+        <span className="facet-rule" />
+        <span className="facet-sublabel">{subtitle}</span>
+      </div>
+      <div className="facet-list">
+        {entries.map(([name, n]) => (
+          <button
+            key={name}
+            className={`facet-row ${active === name ? "is-active" : ""} ${!glyph ? "no-glyph" : ""}`}
+            onClick={() => onPick(name)}
+            title={name}
+          >
+            {glyph && <span className="facet-glyph">{glyph(name)}</span>}
+            <span className="facet-name">{name}</span>
+            <span className="facet-bar-track">
+              <span className="facet-bar-fill" style={{ width: `${(n/max)*100}%` }} />
+            </span>
+            <span className="facet-count">{n}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Control bar ----------
+function ControlBar({ filter, setFilter, sort, setSort, groupBy, setGroupBy, count, total, facets }) {
+  const activeChips = [];
+  if (filter.country !== "all") activeChips.push(["country", filter.country]);
+  if (filter.type !== "all")    activeChips.push(["type", filter.type]);
+  if (filter.region !== "all")  activeChips.push(["region", filter.region]);
+  if (filter.cask !== "all")    activeChips.push(["cask", filter.cask]);
+
+  return (
+    <div className="control-bar">
+      <div className="control-row">
+        <div className="control-left">
+          <SearchField value={filter.q} onChange={(q) => setFilter(f => ({ ...f, q }))} />
+          <span className="control-count">{count.toLocaleString()} of {total.toLocaleString()}</span>
+        </div>
+
+        <div className="control-right">
+          <Dropdown label="Country" value={filter.country} onChange={(v) => setFilter(f => ({ ...f, country: v }))}
+            options={[["all", "All"], ...Object.keys(facets.countries).sort().map(c => [c, c])]} />
+          <Dropdown label="Type" value={filter.type} onChange={(v) => setFilter(f => ({ ...f, type: v }))}
+            options={[["all", "All"], ...Object.keys(facets.types).sort().map(t => [t, t])]} />
+          <Dropdown label="Sort" value={sort} onChange={setSort}
+            options={[
+              ["name","A → Z"],
+              ["distillery","by Distillery"],
+              ["abv-desc","ABV high → low"],
+              ["abv-asc","ABV low → high"],
+              ["rating","Rating"],
+              ["added-desc","Newest filed"],
+            ]} />
+          <Dropdown label="Group" value={groupBy} onChange={setGroupBy}
+            options={[
+              ["country","by Country"],
+              ["type","by Type"],
+              ["region","by Region"],
+              ["distillery","by Distillery"],
+              ["none","Ungrouped"]
+            ]} />
+        </div>
+      </div>
+
+      {activeChips.length > 0 && (
+        <div className="active-chips">
+          <span className="active-chips-label">Filtering by</span>
+          {activeChips.map(([k, v]) => (
+            <button key={k+v} className="active-chip" onClick={() => setFilter(f => ({ ...f, [k]: "all" }))}>
+              <span className="active-chip-key">{k}</span>
+              <span className="active-chip-val">{v}</span>
+              <span className="active-chip-x">×</span>
+            </button>
+          ))}
+          <button className="active-chip-clear" onClick={() => setFilter({ country:"all", type:"all", region:"all", cask:"all", q: filter.q })}>Clear all</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SearchField({ value, onChange }) {
+  return (
+    <label className="search">
+      <span className="search-glyph">⌕</span>
+      <input
+        type="text"
+        placeholder="Search 790 bottles…"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+      />
+      {value && <button className="search-clear" onClick={() => onChange("")}>×</button>}
+    </label>
+  );
+}
+
+function Dropdown({ label, value, onChange, options }) {
+  return (
+    <label className="dropdown">
+      <span className="dropdown-label">{label}</span>
+      <select value={value} onChange={e => onChange(e.target.value)}>
+        {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+      <span className="dropdown-caret">▾</span>
+    </label>
+  );
+}
+
+// ---------- Pagination ----------
+function Pagination({ page, totalPages, onChange, from, to, total, bottom }) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className={`pagination ${bottom ? "pagination-bottom" : ""}`}>
+      <span className="pagination-text">
+        Showing <strong>{from.toLocaleString()}–{to.toLocaleString()}</strong> of {total.toLocaleString()}
+      </span>
+      <div className="pagination-rule" />
+      <div className="pagination-nav">
+        <button className="page-btn" onClick={() => onChange(0)} disabled={page === 0}>‹‹ First</button>
+        <button className="page-btn" onClick={() => onChange(page - 1)} disabled={page === 0}>‹ Prev</button>
+        <span className="page-num">Folio {page + 1} of {totalPages}</span>
+        <button className="page-btn" onClick={() => onChange(page + 1)} disabled={page >= totalPages - 1}>Next ›</button>
+        <button className="page-btn" onClick={() => onChange(totalPages - 1)} disabled={page >= totalPages - 1}>Last ››</button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Section heading ----------
+function Section({ title, count, totalInGroup, children, groupBy }) {
+  if (!title) return <div className="section-body">{children}</div>;
+  const labelMap = { country: "Origin", type: "Category", region: "Region", distillery: "Distillery" };
+  return (
+    <section className="section">
+      <div className="section-head">
+        <span className="section-label">{labelMap[groupBy] || ""}</span>
+        <h2 className="section-title">{title}</h2>
+        <span className="section-rule" />
+        <span className="section-count">
+          {count !== totalInGroup ? `${count} / ${totalInGroup}` : String(totalInGroup).padStart(2, "0")}
+        </span>
+      </div>
+      <div className="section-body">{children}</div>
+    </section>
+  );
+}
+
+// ---------- Bottle row ----------
+function BottleRow({ bottle: b, isEditing, onEdit, onCancel, onSave, onRemove, onRate, onPickFilter }) {
+  const age = ageFromName(b.name);
+  const isCaskStrength = (b.abv || 0) >= 50;
+  const filtered = b.chill_filtered;
+  const colored = b.artificial_color;
+
+  return (
+    <article className={`bottle ${isEditing ? "is-editing" : ""}`}>
+      <div className="bottle-row">
+        <div className="bottle-num">{String(b.id).padStart(3, "0")}</div>
+
+        <div className="bottle-main">
+          <div className="bottle-headline">
+            <h3 className="bottle-name">{b.name}</h3>
+            {isCaskStrength && <span className="cask-strength-mark" title="Cask strength">℆</span>}
+          </div>
+
+          <div className="bottle-line">
+            <button className="bottle-distillery link-inline" onClick={() => onPickFilter("region", b.region)}>
+              {b.distillery || "—"}
+            </button>
+            {b.region && <><span className="sep">·</span>
+              <button className="link-inline subtle" onClick={() => onPickFilter("region", b.region)}>{b.region}</button>
+            </>}
+            <span className="sep">·</span>
+            <button className="link-inline subtle" onClick={() => onPickFilter("type", b.type)}>{b.type || "—"}</button>
+            {b.country && <><span className="sep">·</span>
+              <button className="link-inline subtle" onClick={() => onPickFilter("country", b.country)}>
+                <span className="country-glyph">{COUNTRY_GLYPH[b.country] || "◇"}</span>{b.country}
+              </button>
+            </>}
+          </div>
+
+          {(b.cask_types && b.cask_types.length > 0) && (
+            <div className="cask-row">
+              {b.cask_types.map(c => (
+                <button key={c} className="cask-chip" onClick={() => onPickFilter("cask", c)}>{c}</button>
+              ))}
+            </div>
+          )}
+
+          {b.info_notes && b.info_notes !== `${b.region} single malt scotch` && (
+            <p className="bottle-notes">{b.info_notes}</p>
+          )}
+          {b.tasting_notes && (
+            <p className="bottle-notes tasting">{b.tasting_notes}</p>
+          )}
+
+          <div className="bottle-foot">
+            <Rating value={b.rating} onChange={onRate} />
+            <span className="bottle-meta-mark">
+              {age && <span className="meta-pip">{age} yr</span>}
+              <span className="meta-pip mono">{b.abv}% abv</span>
+              {!filtered && <span className="meta-pip mark-good">non-chill-filtered</span>}
+              {!colored && <span className="meta-pip mark-good">natural colour</span>}
+            </span>
+          </div>
+        </div>
+
+        <div className="bottle-side">
+          <div className="abv-display">
+            <div className="abv-num">{b.abv ? b.abv.toFixed(1) : "—"}</div>
+            <div className="abv-label">% abv</div>
+          </div>
+
+          <div className="bottle-actions">
+            {!isEditing ? (
+              <button className="link" onClick={onEdit}>Edit</button>
+            ) : (
+              <button className="link" onClick={onCancel}>Close</button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {isEditing && <BottleEdit bottle={b} onSave={onSave} onRemove={onRemove} onCancel={onCancel} />}
+    </article>
+  );
+}
+
+// ---------- Star rating ----------
+function Rating({ value, onChange }) {
+  return (
+    <div className="rating" role="radiogroup" aria-label="Rating">
+      {[1,2,3,4,5].map(i => (
+        <button
+          key={i}
+          className={`star ${(value || 0) >= i ? "on" : ""}`}
+          onClick={() => onChange(i)}
+          aria-label={`${i} of 5`}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ---------- Edit form ----------
+const TYPES_OPTIONS = [
+  "Single Malt Scotch","Blended Scotch","Single Grain Scotch","Blended Malt Scotch",
+  "Bourbon Whiskey","Rye Whiskey","Tennessee Whiskey","American Whiskey",
+  "Single Malt Irish","Blended Irish","Pot Still Irish",
+  "Single Malt Japanese","Blended Japanese","Blended Malt Japanese",
+  "Single Malt Canadian","Canadian Whisky",
+  "Other"
+];
+const COUNTRIES = ["Scotland","United States","Ireland","Other"];
+const COMMON_CASKS = ["Ex-bourbon","Ex-sherry","Ex-port","Ex-rum","Ex-wine","Virgin oak","Mizunara","PX","Oloroso","Madeira"];
+
+function BottleEdit({ bottle, onSave, onRemove, onCancel }) {
+  const [draft, setDraft] = useState({ ...bottle, cask_types: bottle.cask_types || [] });
+  const set = (k) => (e) => setDraft(d => ({ ...d, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
+  const toggleCask = (c) => setDraft(d => ({
+    ...d,
+    cask_types: d.cask_types.includes(c) ? d.cask_types.filter(x => x !== c) : [...d.cask_types, c]
+  }));
+
+  return (
+    <div className="edit-pane">
+      <div className="edit-grid">
+        <Field label="Name" wide><input value={draft.name || ""} onChange={set("name")} /></Field>
+        <Field label="Distillery"><input value={draft.distillery || ""} onChange={set("distillery")} /></Field>
+        <Field label="Country">
+          <select value={draft.country || ""} onChange={set("country")}>
+            <option value="">—</option>
+            {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </Field>
+        <Field label="Region"><input value={draft.region || ""} onChange={set("region")} /></Field>
+        <Field label="Type">
+          <select value={draft.type || ""} onChange={set("type")}>
+            <option value="">—</option>
+            {TYPES_OPTIONS.map(t => <option key={t}>{t}</option>)}
+          </select>
+        </Field>
+        <Field label="ABV (%)"><input type="number" step="0.1" value={draft.abv || ""} onChange={set("abv")} /></Field>
+        <Field label="PPM"><input type="number" value={draft.ppm || ""} onChange={set("ppm")} /></Field>
+        <Field label="Filed"><input type="date" value={draft.added || ""} onChange={set("added")} /></Field>
+      </div>
+
+      <Field label="Cask types">
+        <div className="cask-picker">
+          {COMMON_CASKS.map(c => (
+            <label key={c} className={`cask-pick ${draft.cask_types.includes(c) ? "on" : ""}`}>
+              <input type="checkbox" checked={draft.cask_types.includes(c)} onChange={() => toggleCask(c)} />
+              <span>{c}</span>
+            </label>
+          ))}
+        </div>
+      </Field>
+
+      <div className="edit-grid edit-flags">
+        <label className="flag-check">
+          <input type="checkbox" checked={!!draft.chill_filtered} onChange={set("chill_filtered")} />
+          <span>Chill-filtered</span>
+        </label>
+        <label className="flag-check">
+          <input type="checkbox" checked={!!draft.artificial_color} onChange={set("artificial_color")} />
+          <span>Artificially coloured</span>
+        </label>
+      </div>
+
+      <Field label="Producer's notes">
+        <textarea value={draft.info_notes || ""} onChange={set("info_notes")} rows={2} />
+      </Field>
+      <Field label="Tasting note">
+        <textarea value={draft.tasting_notes || ""} onChange={set("tasting_notes")} rows={3}
+          placeholder="Nose, palate, finish, occasion…" />
+      </Field>
+
+      <div className="edit-foot">
+        <button className="btn-danger" onClick={onRemove}>Remove from register</button>
+        <div className="edit-foot-right">
+          <button className="btn-ghost" onClick={onCancel}>Cancel</button>
+          <button className="btn-primary" onClick={() => onSave({
+            ...draft,
+            abv: draft.abv ? Number(draft.abv) : 0,
+            ppm: draft.ppm ? Number(draft.ppm) : 0,
+          })}>Save changes</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children, wide }) {
+  return (
+    <label className={`field ${wide ? "field-wide" : ""}`}>
+      <span className="field-label">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+// ---------- Colophon ----------
+function Colophon({ stats }) {
+  return (
+    <footer className="colophon">
+      <div className="colophon-rule" />
+      <div className="colophon-row">
+        <span className="colophon-label">Colophon</span>
+        <span className="colophon-text">
+          Set in Cormorant &amp; IBM Plex Mono. Printed on cream stock.
+          {" "}{stats.total.toLocaleString()} entries across {stats.distilleries} distilleries.
+          {" "}Synced to a private GitHub ledger.
+        </span>
+        <span className="colophon-mark">℞</span>
+      </div>
+    </footer>
+  );
+}
+
+// ---------- Tweaks ----------
+function TweaksPanelHost({ tweaks, setTweak }) {
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection title="Theme">
+        <TweakRadio
+          label="Palette"
+          value={tweaks.theme}
+          onChange={(v) => setTweak("theme", v)}
+          options={[["paper","Paper"],["ink","Ink"],["bone","Bone"]]}
+        />
+        <TweakColor
+          label="Accent"
+          value={tweaks.accent}
+          onChange={(v) => setTweak("accent", v)}
+          options={["#8a4a1f","#5e3a1d","#a8702c","#3d5a3d","#2f4a6b"]}
+        />
+        <TweakSelect
+          label="Display font"
+          value={tweaks.displayFont}
+          onChange={(v) => setTweak("displayFont", v)}
+          options={[["cormorant","Cormorant Garamond"],["newsreader","Newsreader"],["ibmplex","IBM Plex Serif"]]}
+        />
+      </TweakSection>
+
+      <TweakSection title="Layout">
+        <TweakRadio
+          label="Density"
+          value={tweaks.density}
+          onChange={(v) => setTweak("density", v)}
+          options={[["compact","Compact"],["comfortable","Comfortable"],["spacious","Spacious"]]}
+        />
+        <TweakSelect
+          label="Group entries"
+          value={tweaks.groupBy}
+          onChange={(v) => setTweak("groupBy", v)}
+          options={[["country","by Country"],["type","by Type"],["region","by Region"],["distillery","by Distillery"],["none","Ungrouped"]]}
+        />
+        <TweakSelect
+          label="Folio size"
+          value={String(tweaks.pageSize)}
+          onChange={(v) => setTweak("pageSize", Number(v))}
+          options={[["25","25 per folio"],["50","50 per folio"],["100","100 per folio"],["200","200 per folio"]]}
+        />
+        <TweakToggle
+          label="Show facet strip"
+          value={tweaks.showRegionMap}
+          onChange={(v) => setTweak("showRegionMap", v)}
+        />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+// ---------- GitHub setup overlay ----------
+function SetupOverlay({ cfg, onConnect, onCancel }) {
+  const [user, setUser] = useState(cfg?.user || "");
+  const [repo, setRepo] = useState(cfg?.repo || "");
+  const [token, setToken] = useState(cfg?.token || "");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setError("");
+    if (!user || !repo || !token) { setError("All fields are required."); return; }
+    setBusy(true);
+    try {
+      const res = await fetch(`https://api.github.com/repos/${user}/${repo}`, {
+        headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" }
+      });
+      if (res.status === 401) throw new Error("Invalid token — check it was copied correctly.");
+      if (res.status === 404) throw new Error("Repo not found — check username and repo name.");
+      if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
+      onConnect({ user, repo, token });
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="setup-overlay">
+      <div className="setup-box">
+        <div className="setup-eyebrow">The Cellar Register</div>
+        <h2 className="setup-title">Connect to GitHub</h2>
+        <p className="setup-body">
+          Your collection is stored as a <code>collection.json</code> file in your GitHub repository.
+          Enter your details once — they live only in this browser's <code>localStorage</code>.
+        </p>
+        <Field label="GitHub username">
+          <input type="text" value={user} onChange={e => setUser(e.target.value.trim())} placeholder="e.g. davidsmith" autoFocus />
+        </Field>
+        <Field label="Repository name">
+          <input type="text" value={repo} onChange={e => setRepo(e.target.value.trim())} placeholder="e.g. whisky-collection" />
+        </Field>
+        <Field label="Personal access token">
+          <input type="password" value={token} onChange={e => setToken(e.target.value.trim())} placeholder="ghp_…" />
+        </Field>
+        <p className="setup-hint">
+          Needs <code>repo</code> scope.{" "}
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=Whisky+Tracker" target="_blank" rel="noreferrer">Generate one →</a>
+        </p>
+        {error && <div className="setup-error">{error}</div>}
+        <div className="setup-foot">
+          {onCancel && <button className="btn-ghost" onClick={onCancel} disabled={busy}>Cancel</button>}
+          <button className="btn-primary" onClick={submit} disabled={busy}>{busy ? "Checking…" : "Connect"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+  </script>
 </body>
 </html>
